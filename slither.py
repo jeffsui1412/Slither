@@ -63,8 +63,12 @@ def game_loop():
             snake_block(red, each[0], each[1], snake_width, snake_width)
         snake_body.pop()
         snake_body.insert(0, s_block)
-
-        del snake_body[-1]
+        if snake_body[0][0] < 0 or snake_body[0][0] > display_width - snake_width:
+            pygame.quit()
+            quit()
+        elif snake_body[0][1] < 0 or snake_body[0][1] > display_height - snake_width:
+            pygame.quit()
+            quit()
 
 
         pygame.display.update()
