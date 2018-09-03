@@ -24,6 +24,9 @@ def snake_block(color, x, y, w, h):
 def apple(color, x, y, w, h):
     pygame.draw.rect(gameDisplay, color, [x, y, w, h])
 
+def apple_ran():
+    return 20 * random.randint(0, 30)
+
 def game_loop():
     x_change = random.choice([-5, 5])
     y_change = 0
@@ -33,14 +36,10 @@ def game_loop():
     snake_body = [[80, 100], [80, 120], [80, 140], [80, 160]]
     x_change = snake_width
     y_change = 0
-
     apple_width = 20
-    apple_choice = []
-    for each in range(display_width-20):
-        if each % 20 == 0:
-            apple_choice.append(each)
-    apple_x = random.choice(apple_choice)
-    apple_y = random.choice(apple_choice)
+
+    apple_x = apple_ran()
+    apple_y = apple_ran()
 
     while True:
         for event in pygame.event.get():
@@ -62,25 +61,30 @@ def game_loop():
                     y_change = -snake_width
                     x_change = 0
 
-        gameDisplay.fill(white)
         snake_x = x_change + snake_body[0][0]
         snake_y = y_change + snake_body[0][1]
         s_block = [snake_x, snake_y]
+        eat = False
+        #white game display
+        gameDisplay.fill(white)
         #add tail
         snake_body.insert(0, s_block)
         #blit snake body
         for each in snake_body:
             snake_block(red, each[0], each[1], snake_width, snake_width)
-        #remove tail
-        del snake_body[-1]
         #check wall
         if snake_body[0][0] < 0 or snake_body[0][0] > display_width - snake_width or snake_body[0][1] < 0 or snake_body[0][1] > display_height - snake_width:
             pygame.quit()
             quit()
-        #blit apple
-        if snake_body[0] == apple_x and snake_body[1] == apple_y:
-            apple_x = random.choice(apple_choice)
-            apple_y = random.choice(apple_choice)
+        #check apple
+        if snake_body[0][0] == apple_x and snake_body[0][1] == apple_y:
+            apple_x = apple_ran()
+            apple_y = apple_ran()
+            eat = True
+        #remove tail
+        if not eat:
+            snake_body.pop()
+
         apple(green, apple_x, apple_y, apple_width, apple_width)
         pygame.display.update()
         clock.tick(10)
