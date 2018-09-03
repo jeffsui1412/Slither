@@ -33,8 +33,6 @@ def apple_ran():
 
 def game_loop():
     fps = 10
-    x_change = random.choice([-5, 5])
-    y_change = 0
     snake_width = 20
     snake_x = 0
     snake_y = 0
@@ -54,7 +52,6 @@ def game_loop():
 
     while True:
         for event in pygame.event.get():
-            print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
@@ -82,6 +79,7 @@ def game_loop():
 
         snake_x = x_change + snake_body[0][0]
         snake_y = y_change + snake_body[0][1]
+        points = len(snake_body)-4
         s_block = [snake_x, snake_y]
         eat = False
         #white game display
@@ -115,13 +113,15 @@ def game_loop():
         #add apple
         apple(green, apple_x, apple_y, apple_width, apple_width)
 
-        #check length
-        if len(snake_body) >= 10:
-            fps += 5
+        #check points
+        if points >= 10:
+            if points % 4 == 0:
+                fps += 1
 
-        game_point(len(snake_body ))
+        game_point(points)
+        print(snake_body)
         pygame.display.update()
-        clock.tick(13)
+        clock.tick(fps)
 
 
 game_loop()
