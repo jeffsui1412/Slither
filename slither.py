@@ -17,6 +17,11 @@ gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Snake')
 clock = pygame.time.Clock()
 
+def game_point(points):
+    font = pygame.font.SysFont("comicsansms", 30)
+    text = font.render("Game Points: " + str(points), True, black)
+    gameDisplay.blit(text, (0, 0))
+
 def snake_block(color, x, y, w, h):
     pygame.draw.rect(gameDisplay, color, [x, y, w, h])
 
@@ -113,6 +118,8 @@ def game_loop():
         #check length
         if len(snake_body) >= 10:
             fps += 5
+
+        game_point(len(snake_body ))
         pygame.display.update()
         clock.tick(13)
 
