@@ -45,7 +45,7 @@ def game_loop():
     RIGHT = 2
     DOWN = 3
     LEFT = 4
-
+    dir = 0
     while True:
         for event in pygame.event.get():
             print(event)
