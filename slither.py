@@ -24,7 +24,7 @@ def apple(color, x, y, w, h):
     pygame.draw.rect(gameDisplay, color, [x, y, w, h])
 
 def apple_ran():
-    return 20 * random.randint(0, 30)
+    return 20 * random.randint(3, 29)
 
 def game_loop():
     fps = 10
@@ -46,6 +46,7 @@ def game_loop():
     DOWN = 3
     LEFT = 4
     dir = 0
+
     while True:
         for event in pygame.event.get():
             print(event)
