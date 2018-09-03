@@ -54,25 +54,33 @@ def game_loop():
                 quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
-                    if dir != 2:
+                    if LEFT == 4:
                         x_change = -snake_width
                         y_change = 0
-                        dir = LEFT
+                        RIGHT = 0
+                        DOWN = 3
+                        UP = 1
                 if event.key == pygame.K_d:
-                    if dir != 4:
+                    if RIGHT == 2:
                         x_change = snake_width
                         y_change = 0
-                        dir = RIGHT
+                        LEFT = 0
+                        DOWN = 3
+                        UP = 1
                 if event.key == pygame.K_s:
-                    if dir != 1:
+                    if DOWN == 3:
                         y_change = snake_width
                         x_change = 0
-                        dir = DOWN
+                        UP = 0
+                        LEFT = 4
+                        RIGHT = 2
                 if event.key == pygame.K_w:
-                    if dir != 3:
+                    if UP == 1:
                         y_change = -snake_width
                         x_change = 0
-                        dir = UP
+                        DOWN = 0
+                        LEFT = 4
+                        RIGHT = 2
 
         snake_x = x_change + snake_body[0][0]
         snake_y = y_change + snake_body[0][1]
