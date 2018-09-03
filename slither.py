@@ -31,6 +31,9 @@ def game_loop():
     snake_x = 0
     snake_y = 0
     snake_body = [[80, 100], [80, 120], [80, 140], [80, 160]]
+    x_change = snake_width
+    y_change = 0
+
     # snake_body = {1, 2, 3, 4}
     while True:
         for event in pygame.event.get():
@@ -52,8 +55,10 @@ def game_loop():
                     y_change = -snake_width
                     x_change = 0
 
-        snake_x += x_change + snake_body[0][0]
-        snake_y += y_change + snake_body[0][1]
+        gameDisplay.fill(white)
+
+        snake_x = x_change + snake_body[0][0]
+        snake_y = y_change + snake_body[0][1]
         s_block = [snake_x, snake_y]
 
         snake_body.insert(0, s_block)
@@ -61,8 +66,8 @@ def game_loop():
         for each in snake_body:
             snake_block(red, each[0], each[1], snake_width, snake_width)
 
+        del snake_body[-1]
 
-        gameDisplay.fill(white)
 
         pygame.display.update()
         clock.tick(15)
