@@ -17,7 +17,7 @@ gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Snake')
 clock = pygame.time.Clock()
 
-pause = False
+paused = False
 
 def quitgame():
     pygame.quit()
@@ -63,7 +63,7 @@ def game_intro():
                 quitgame()
         gameDisplay.fill(white)
         largeText = pygame.font.SysFont("comicsansms", 100)
-        TextSurf, TextRect = text_objects("A Snake Game", largeText)
+        TextSurf, TextRect = text_objects("Snake Game", largeText)
         TextRect.center = ((display_width/2), (display_height/2))
         gameDisplay.blit(TextSurf, TextRect)
         button("GO!",150,450,100,50,green,bright_green,game_loop)
@@ -72,20 +72,19 @@ def game_intro():
         clock.tick(40)
 
 def unpause():
-    global pause
-    pause = False
+    global paused
+    paused = False
 
 def crashed():
+    largeText = pygame.font.SysFont("comicsansms", 100)
+    TextSurf, TextRect = text_objects("---- Game Over ---- ", largeText)
+    TextRect.center = ((display_width/2), (display_height/2))
+    gameDisplay.blit(TextSurf, TextRect)
     while True:
         for event in pygame.event.get():
-            if event == pygame.QUIT:
+            if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-        gameDisplay.fill(white)
-        largeText = pygame.font.SysFont("comicsansms", 100)
-        TextSurf, TextRect = text_objects("---- Game Over ---- ", largeText)
-        TextRect.center = ((display_width/2), (display_height/2))
-        gameDisplay.blit(TextSurf, TextRect)
         button("Play Again!",150,450,100,50,green,bright_green,game_loop)
         button("Quit",550,450,100,50,red,bright_red,quitgame)
         pygame.display.update()
@@ -93,22 +92,21 @@ def crashed():
 
 def pause():
     largeText = pygame.font.SysFont("comicsansms", 90)
-    TextSurf, TextRect = text_objects("You have paused ", largeText)
+    TextSurf, TextRect = text_objects("Paused ", largeText)
     TextRect.center = ((display_width/2), (display_height/2))
     gameDisplay.blit(TextSurf, TextRect)
-    while pause:
+    while paused:
         for event in pygame.event.get():
-            if event == pygame.QUIT:
+            if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-        gameDisplay.fill(white)
         button("Keep playing!",150,450,100,50,green,bright_green,unpause)
         button("Quit",550,450,100,50,red,bright_red,quitgame)
         pygame.display.update()
         clock.tick(40)
 
 def game_loop():
-    global pause
+    global paused
     fps = 11
     snake_width = 20
     snake_x = 0
@@ -134,7 +132,7 @@ def game_loop():
                 quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
-                    pause = True
+                    paused = True
                     pause()
                 if event.key == pygame.K_a:
                     if dir != 2:
