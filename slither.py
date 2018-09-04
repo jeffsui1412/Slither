@@ -57,15 +57,15 @@ def apple_ran():
 
 def game_intro():
     intro = True
+    gameDisplay.fill(white)
+    largeText = pygame.font.SysFont("comicsansms", 100)
+    TextSurf, TextRect = text_objects("Snake Game", largeText)
+    TextRect.center = ((display_width/2), (display_height/2))
+    gameDisplay.blit(TextSurf, TextRect)
     while intro:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 quitgame()
-        gameDisplay.fill(white)
-        largeText = pygame.font.SysFont("comicsansms", 100)
-        TextSurf, TextRect = text_objects("Snake Game", largeText)
-        TextRect.center = ((display_width/2), (display_height/2))
-        gameDisplay.blit(TextSurf, TextRect)
         button("GO!",150,450,100,50,green,bright_green,game_loop)
         button("Quit",550,450,100,50,red,bright_red,quitgame)
         pygame.display.update()
