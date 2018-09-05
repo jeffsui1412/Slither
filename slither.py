@@ -21,9 +21,6 @@ snake_body = [[80, 100], [80, 120], [80, 140], [80, 160]]
 
 paused = False
 
-def quitgame():
-    pygame.quit()
-    quit()
 
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
@@ -57,26 +54,6 @@ def apple(color, x, y, w, h):
 
 def apple_ran():
     return 20 * random.randint(3, 29)
-
-def game_intro():
-    intro = True
-    gameDisplay.fill(white)
-    largeText = pygame.font.SysFont("comicsansms", 100)
-    TextSurf, TextRect = text_objects("Snake Game", largeText)
-    TextRect.center = ((display_width/2), (display_height/2))
-    gameDisplay.blit(TextSurf, TextRect)
-    while intro:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                quitgame()
-        button("GO!",150,450,100,50,green,bright_green,game_loop)
-        button("Quit",550,450,100,50,red,bright_red,quitgame)
-        pygame.display.update()
-        clock.tick(40)
-
-def unpause():
-    global paused
-    paused = False
 
 def crashed():
     global snake_body
@@ -117,6 +94,30 @@ def pause():
                 pygame.quit()
                 quit()
         button("Keep playing!",150,450,100,50,green,bright_green,unpause)
+        button("Quit",550,450,100,50,red,bright_red,quitgame)
+        pygame.display.update()
+        clock.tick(40)
+
+def unpause():
+    global paused
+    paused = False
+
+def quitgame():
+    pygame.quit()
+    quit()
+
+def game_intro():
+    intro = True
+    gameDisplay.fill(white)
+    largeText = pygame.font.SysFont("comicsansms", 100)
+    TextSurf, TextRect = text_objects("Snake Game", largeText)
+    TextRect.center = ((display_width/2), (display_height/2))
+    gameDisplay.blit(TextSurf, TextRect)
+    while intro:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quitgame()
+        button("GO!",150,450,100,50,green,bright_green,game_loop)
         button("Quit",550,450,100,50,red,bright_red,quitgame)
         pygame.display.update()
         clock.tick(40)
