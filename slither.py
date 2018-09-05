@@ -17,6 +17,8 @@ gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Snake')
 clock = pygame.time.Clock()
 
+snake_body = [[80, 100], [80, 120], [80, 140], [80, 160]]
+
 paused = False
 
 def quitgame():
@@ -41,10 +43,11 @@ def button(msg, x, y, w, h, ic, ac, action = None):
     textRect.center = ( (x+(w/2)), (y+(h/2)) )
     gameDisplay.blit(textSurf, textRect)
 
-def game_point(points):
+def game_point(points, x, y, text):
     font = pygame.font.SysFont("comicsansms", 30)
-    text = font.render("Game Points: " + str(points), True, black)
-    gameDisplay.blit(text, (0, 0))
+    text = font.render(text + str(points), True, black)
+    gameDisplay.blit(text, (x, y))
+
 
 def snake_block(color, x, y, w, h):
     pygame.draw.rect(gameDisplay, color, [x, y, w, h])
@@ -76,10 +79,16 @@ def unpause():
     paused = False
 
 def crashed():
-    largeText = pygame.font.SysFont("comicsansms", 100)
+    global snake_body
+    global highest_point
+    print(snake_body)
+    largeText = pygame.font.SysFont("comicsansms", 80)
     TextSurf, TextRect = text_objects("---- Game Over ---- ", largeText)
     TextRect.center = ((display_width/2), (display_height/2))
     gameDisplay.blit(TextSurf, TextRect)
+    high(len(snake_body)-4)
+    game_point(len(snake_body)-4, 0, 0, "Game Points: ")
+    game_point((highest_point), 0, 40, "Highest Game Score: ")
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -89,6 +98,13 @@ def crashed():
         button("Quit",550,450,100,50,red,bright_red,quitgame)
         pygame.display.update()
         clock.tick(40)
+
+def high(point):
+    global highest_point
+    if highest_point <= point:
+        highest_point = point
+        with open("point.txt", "w") as file:
+            file.write(str(highest_point))
 
 def pause():
     largeText = pygame.font.SysFont("comicsansms", 90)
@@ -107,11 +123,13 @@ def pause():
 
 def game_loop():
     global paused
+    global highest_point
+    global snake_body
+    snake_body = [[80, 100], [80, 120], [80, 140], [80, 160]]
     fps = 11
     snake_width = 20
     snake_x = 0
     snake_y = 0
-    snake_body = [[80, 100], [80, 120], [80, 140], [80, 160]]
     x_change = snake_width
     y_change = 0
     apple_width = 20
@@ -124,6 +142,14 @@ def game_loop():
     DOWN = 3
     LEFT = 4
     dir = RIGHT
+
+    #open file
+    file = open("point.txt", "r")
+    file_num = file.read()
+    highest_point = int(file_num)
+    #close file
+    file.close()
+    print(highest_point)
 
     while True:
         count = True
@@ -175,32 +201,35 @@ def game_loop():
         #add head
         snake_body.insert(0, s_block)
 
-        #blit snake body
-        for each in snake_body:
-            snake_block(red, each[0], each[1], snake_width, snake_width)
-
-        #check wall
-        if snake_body[0][0] < 0 or snake_body[0][0] > display_width - snake_width or snake_body[0][1] < 0 or snake_body[0][1] > display_height - snake_width:
-            crashed()
-
         #check apple
         if snake_body[0][0] == apple_x and snake_body[0][1] == apple_y:
             apple_x = apple_ran()
             apple_y = apple_ran()
             eat = True
-        #check snake body
-        if snake_body[0] in snake_body[1:]:
-            crashed()
 
         #remove tail
         if not eat:
             snake_body.pop()
+
+        #blit snake body
+        for each in snake_body:
+            snake_block(red, each[0], each[1], snake_width, snake_width)
+
+        #check wall
+        if snake_body[0][0] <= 0 or snake_body[0][0] >= display_width - snake_width or snake_body[0][1] <= 0 or snake_body[0][1] >= display_height - snake_width:
+            crashed()
+
+        #check snake body
+        if snake_body[0] in snake_body[1:]:
+            crashed()
+
         #add apple
         apple(green, apple_x, apple_y, apple_width, apple_width)
 
-        #show text
-        game_point(points)
-
+        #show point
+        game_point(points, 0, 0, "Game Points: ")
+        game_point(highest_point, 0, 40, "Highest Game Score: ")
+        print(snake_body)
         pygame.display.update()
         clock.tick(fps)
 
