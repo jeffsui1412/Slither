@@ -126,6 +126,7 @@ def game_loop():
     dir = RIGHT
 
     while True:
+        count = True
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -136,24 +137,32 @@ def game_loop():
                     pause()
                 if event.key == pygame.K_a:
                     if dir != 2:
-                        x_change = -snake_width
-                        y_change = 0
-                        dir = LEFT
+                        if count:
+                            x_change = -snake_width
+                            y_change = 0
+                            count = False
+                            dir = LEFT
                 if event.key == pygame.K_d:
                     if dir != 4:
-                        x_change = snake_width
-                        y_change = 0
-                        dir = RIGHT
+                        if count:
+                            x_change = snake_width
+                            y_change = 0
+                            count = False
+                            dir = RIGHT
                 if event.key == pygame.K_s:
                     if dir != 1:
-                        y_change = snake_width
-                        x_change = 0
-                        dir = DOWN
+                        if count:
+                            y_change = snake_width
+                            x_change = 0
+                            count = False
+                            dir = DOWN
                 if event.key == pygame.K_w:
                     if dir != 3:
-                        y_change = -snake_width
-                        x_change = 0
-                        dir = UP
+                        if count:
+                            y_change = -snake_width
+                            x_change = 0
+                            count = False
+                            dir = UP
 
         snake_x = x_change + snake_body[0][0]
         snake_y = y_change + snake_body[0][1]
