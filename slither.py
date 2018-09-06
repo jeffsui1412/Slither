@@ -21,7 +21,7 @@ snake_body = [[80, 100], [80, 120], [80, 140], [80, 160]]
 
 paused = False
 
-left = pygame.K_a
+left = 4
 
 
 def text_objects(text, font):
@@ -107,25 +107,25 @@ def quitgame():
     pygame.quit()
     quit()
 
-# def settings():
-#     global left
-#     largeText = pygame.font.SysFont("comicsansms", 90)
-#     TextSurf, TextRect = text_objects("Setttings", largeText)
-#     TextRect.center = ((display_width/2), (display_height/2))
-#     while True:
-#         gameDisplay.fill(white)
-#         gameDisplay.blit(TextSurf, TextRect)
-#         mouse = pygame.mouse.get_pos()
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 quitgame()
-#         if display_width/2 >= mouse[0] >= 0 and mouse[1] <= display_height/2:
-#             apple(green, 20, 20, 20, 20)
-#             for event in pygame.event.get():
-#                 left = event.key
-#             print(left)
-#         pygame.display.update()
-#         clock.tick(10)
+def settings():
+    global left
+    largeText = pygame.font.SysFont("comicsansms", 90)
+    TextSurf, TextRect = text_objects("Setttings", largeText)
+    TextRect.center = ((display_width/2), (display_height/2))
+    while True:
+        gameDisplay.fill(white)
+        gameDisplay.blit(TextSurf, TextRect)
+        mouse = pygame.mouse.get_pos()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quitgame()
+        if display_width/2 >= mouse[0] >= 0 and mouse[1] <= display_height/2:
+            apple(green, 20, 20, 20, 20)
+            for event in pygame.event.get():
+                left = 2
+        print(left)
+        pygame.display.update()
+        clock.tick(10)
 
 def game_intro():
     intro = True
@@ -140,8 +140,7 @@ def game_intro():
                 quitgame()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_l:
-                    # settings()
-                    pass
+                    settings()
         button("GO!",150,450,100,50,green,bright_green,game_loop)
         button("Quit",550,450,100,50,red,bright_red,quitgame)
         pygame.display.update()
