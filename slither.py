@@ -122,7 +122,7 @@ def settings(back):
         keys = file.read().split(",")
     largeText = pygame.font.SysFont("comicsansms", 90)
     smallText = pygame.font.SysFont("comicsansms", 45)
-    TitleSurf, TitleRect = text_objects("Setttings", largeText)
+    TitleSurf, TitleRect = text_objects("Settings", largeText)
     TitleRect.center = ((display_width/2), 100)
     gameDisplay.fill(white)
     gameDisplay.blit(TitleSurf, TitleRect)
