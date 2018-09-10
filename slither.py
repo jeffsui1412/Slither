@@ -1,4 +1,5 @@
 import pygame
+from pygame.locals import *
 import random
 
 pygame.init()
@@ -21,6 +22,12 @@ snake_body = [[80, 100], [80, 120], [80, 140], [80, 160]]
 
 paused = False
 
+<<<<<<< HEAD
+=======
+BUTTON_W = 200
+BUTTON_H = 60
+
+>>>>>>> 3eae3640d71a9cbf51d70c64fb09870e1b18a68f
 
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
@@ -106,26 +113,61 @@ def quitgame():
     quit()
 
 def settings():
+<<<<<<< HEAD
     button_width = 80
     largeText = pygame.font.SysFont("comicsansms", 50)
     TextSurf, TextRect = text_objects("Setttings", largeText)
     TextRect.center = ((display_width/2), (display_height/5))
+=======
+    global left
+    largeText = pygame.font.SysFont("comicsansms", 90)
+    smallText = pygame.font.SysFont("comicsansms", 45)
+    TitleSurf, TitleRect = text_objects("Setttings", largeText)
+    TitleRect.center = ((display_width/2), 100)
+
+    buttons = []
+    texts = ("Up", "Down", "Right", "Left")
+    keys = [K_w, K_s, K_a, K_d]
+
+>>>>>>> 3eae3640d71a9cbf51d70c64fb09870e1b18a68f
     while True:
         mouse_pos = pygame.mouse.get_pos()
         gameDisplay.fill(white)
+<<<<<<< HEAD
         gameDisplay.blit(TextSurf, TextRect)
         button1 = pygame.Rect(display_width/2-button_width/2, (display_height/5)*2, button_width, 40)
         pygame.draw.rect(gameDisplay, green, button1)
         if button1.collidepoint(mouse_pos):
             print("mouse over button1")
+=======
+        gameDisplay.blit(TitleSurf, TitleRect)
+
+        for i in range(4):
+            buttons.append(pygame.Rect((display_width-BUTTON_W)/2,
+                                       240 + i * (BUTTON_H + 10),
+                                       BUTTON_W,
+                                       BUTTON_H))
+            pygame.draw.rect(gameDisplay, green, buttons[i])
+            k_name = pygame.key.name(keys[i])
+            TextSurf, TextRect = text_objects(texts[i]+' : '+k_name, smallText)
+            TextRect.center = buttons[i].center
+            gameDisplay.blit(TextSurf, TextRect)
+>>>>>>> 3eae3640d71a9cbf51d70c64fb09870e1b18a68f
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+            if event.type == pygame.KEYDOWN:
+                for button in buttons:
+                    if button.collidepoint(mouse_pos):
+                        i = buttons.index(button)
+                        keys[i] = event.key
+
+        print(keys)
 
         pygame.display.update()
-        clock.tick(10)
+        clock.tick(30)
 
 def game_intro():
     intro = True
