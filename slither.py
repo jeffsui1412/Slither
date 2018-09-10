@@ -105,22 +105,17 @@ def quitgame():
     pygame.quit()
     quit()
 
-<<<<<<< HEAD
-=======
 def settings():
-    global left
-    largeText = pygame.font.SysFont("comicsansms", 90)
+    button_width = 80
+    largeText = pygame.font.SysFont("comicsansms", 50)
     TextSurf, TextRect = text_objects("Setttings", largeText)
-    TextRect.center = ((display_width/2), (display_height/2))
+    TextRect.center = ((display_width/2), (display_height/5))
     while True:
         mouse_pos = pygame.mouse.get_pos()
-
         gameDisplay.fill(white)
         gameDisplay.blit(TextSurf, TextRect)
-
-        button1 = pygame.Rect(200, 200, 100, 100)
+        button1 = pygame.Rect(display_width/2-button_width/2, (display_height/5)*2, button_width, 40)
         pygame.draw.rect(gameDisplay, green, button1)
-
         if button1.collidepoint(mouse_pos):
             print("mouse over button1")
 
@@ -131,7 +126,6 @@ def settings():
 
         pygame.display.update()
         clock.tick(10)
->>>>>>> ba34160a13e3f8179dd1e6ee7b6e1085318a5c7a
 
 def game_intro():
     intro = True
