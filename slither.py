@@ -6,6 +6,7 @@ pygame.init()
 
 display_width = 800
 display_height = 600
+
 black = (0, 0, 0)
 white = (255, 255, 255)
 red = (200, 0, 0)
@@ -29,7 +30,7 @@ def text_objects(text, font):
     textSurface = font.render(text, True, black)
     return textSurface, textSurface.get_rect()
 
-def button(msg, x, y, w, h, ic, ac, action = None):
+def active_button(msg, x, y, w, h, ic, ac, action = None):
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
@@ -73,8 +74,8 @@ def crashed():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-        button("Play Again!",150,450,100,50,green,bright_green,game_loop)
-        button("Quit",550,450,100,50,red,bright_red,quitgame)
+        active_button("Play Again!",150,450,100,50,green,bright_green,game_loop)
+        active_button("Quit",550,450,100,50,red,bright_red,quitgame)
         pygame.display.update()
         clock.tick(40)
 
@@ -95,8 +96,8 @@ def pause():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-        button("Keep playing!",150,450,100,50,green,bright_green,unpause)
-        button("Quit",550,450,100,50,red,bright_red,quitgame)
+        active_button("Keep playing!",150,450,100,50,green,bright_green,unpause)
+        active_button("Quit",550,450,100,50,red,bright_red,quitgame)
         pygame.display.update()
         clock.tick(40)
 
@@ -109,29 +110,23 @@ def quitgame():
     quit()
 
 def settings():
+    #open file key.txt, read keys
+    with open("keys.txt", "r") as file:
+        keys = file.read().split(",")
+
+    texts = ("Up", "Down", "Right", "Left")
     button_width = 80
-    largeText = pygame.font.SysFont("comicsansms", 50)
-    TextSurf, TextRect = text_objects("Setttings", largeText)
-    TextRect.center = ((display_width/2), (display_height/5))
-    global left
+
     largeText = pygame.font.SysFont("comicsansms", 90)
     smallText = pygame.font.SysFont("comicsansms", 45)
     TitleSurf, TitleRect = text_objects("Setttings", largeText)
     TitleRect.center = ((display_width/2), 100)
-
-    buttons = []
-    texts = ("Up", "Down", "Right", "Left")
-    keys = [K_w, K_s, K_a, K_d]
+    gameDisplay.fill(white)
+    gameDisplay.blit(TitleSurf, TitleRect)
 
     while True:
         mouse_pos = pygame.mouse.get_pos()
-        gameDisplay.fill(white)
-        gameDisplay.blit(TextSurf, TextRect)
-        button1 = pygame.Rect(display_width/2-button_width/2, (display_height/5)*2, button_width, 40)
-        pygame.draw.rect(gameDisplay, green, button1)
-        if button1.collidepoint(mouse_pos):
-            print("mouse over button1")
-        gameDisplay.blit(TitleSurf, TitleRect)
+        buttons = []
 
         for i in range(4):
             buttons.append(pygame.Rect((display_width-BUTTON_W)/2,
@@ -139,8 +134,8 @@ def settings():
                                        BUTTON_W,
                                        BUTTON_H))
             pygame.draw.rect(gameDisplay, green, buttons[i])
-            k_name = pygame.key.name(keys[i])
-            TextSurf, TextRect = text_objects(texts[i]+' : '+k_name, smallText)
+            k_name = pygame.key.name(int(keys[i]))
+            TextSurf, TextRect = text_objects(texts[i]+' : '+ k_name, smallText)
             TextRect.center = buttons[i].center
             gameDisplay.blit(TextSurf, TextRect)
 
@@ -151,11 +146,12 @@ def settings():
             if event.type == pygame.KEYDOWN:
                 for button in buttons:
                     if button.collidepoint(mouse_pos):
-                        i = buttons.index(button)
-                        keys[i] = event.key
-
-        print(keys)
-
+                        index = buttons.index(button)
+                        keys[index] = event.key
+                        with open("keys.txt", "w") as file:
+                            file.write(','.join(map(str, keys)))
+        active_button("Back",150,540,100,50,green,bright_green,game_intro)
+        active_button("Start Game",550,540,100,50,red,bright_red,game_loop)
         pygame.display.update()
         clock.tick(30)
 
@@ -173,8 +169,8 @@ def game_intro():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_l:
                     settings()
-        button("GO!",150,450,100,50,green,bright_green,game_loop)
-        button("Quit",550,450,100,50,red,bright_red,quitgame)
+        active_button("GO!",150,450,100,50,green,bright_green,game_loop)
+        active_button("Quit",550,450,100,50,red,bright_red,quitgame)
         pygame.display.update()
         clock.tick(40)
 
@@ -182,7 +178,7 @@ def game_loop():
     global paused
     global highest_point
     global snake_body
-    global left
+
     snake_body = [[80, 100], [80, 120], [80, 140], [80, 160]]
     fps = 11
     snake_width = 20
@@ -201,12 +197,16 @@ def game_loop():
     LEFT = 4
     dir = RIGHT
 
-    #open file
+    #open file point.txt
     file = open("point.txt", "r")
     file_num = file.read()
     highest_point = int(file_num)
-    #close file
     file.close()
+    #open file keys.txt
+    with open("keys.txt", "r") as file:
+        keys = file.read().split(",")
+    keys = map(int, keys)
+    up, down, right, left = keys
 
     while True:
         count = True
@@ -215,7 +215,7 @@ def game_loop():
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_p:
+                if event.key == K_p:
                     paused = True
                     pause()
                 if event.key == left:
@@ -225,21 +225,21 @@ def game_loop():
                             y_change = 0
                             count = False
                             dir = LEFT
-                if event.key == pygame.K_d:
+                if event.key == right:
                     if dir != 4:
                         if count:
                             x_change = snake_width
                             y_change = 0
                             count = False
                             dir = RIGHT
-                if event.key == pygame.K_s:
+                if event.key == down:
                     if dir != 1:
                         if count:
                             y_change = snake_width
                             x_change = 0
                             count = False
                             dir = DOWN
-                if event.key == pygame.K_w:
+                if event.key == up:
                     if dir != 3:
                         if count:
                             y_change = -snake_width
@@ -273,7 +273,9 @@ def game_loop():
             snake_block(red, each[0], each[1], snake_width, snake_width)
 
         #check wall
-        if snake_body[0][0] < 0 or snake_body[0][0] > display_width - snake_width or snake_body[0][1] < 0 or snake_body[0][1] > display_height - snake_width:
+        if snake_body[0][0] < 0 or snake_body[0][0] > display_width -
+                                snake_width or snake_body[0][1] < 0 or
+                                snake_body[0][1] > display_height - snake_width:
             crashed()
 
         #check snake body
@@ -289,4 +291,4 @@ def game_loop():
         pygame.display.update()
         clock.tick(fps)
 
-settings()
+game_intro()
