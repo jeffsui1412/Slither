@@ -26,6 +26,67 @@ paused = False
 BUTTON_W = 200
 BUTTON_H = 60
 
+class Button:
+    family = []
+
+    def __init__(self, x, y, w, h, ac_color, ic_color, key, index):
+        self.ac_color = ac_color
+        self.ic_color = ic_color
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.key = key
+        self.index = index
+        __class__.family.append(self)
+
+    def show(self):
+        mouse = pygame.mouse.get_pos()
+        button = pygame.Rect(self.x, self.y, self.w, self.h)
+        if button.collidepoint(mouse):
+            pygame.draw.rect(gameDisplay, self.ac_color, button)
+            self.word()
+            return True
+        else:
+            pygame.draw.rect(gameDisplay, self.ic_color, button)
+            self.word()
+
+
+    def word(self):
+        TEXTS = ("Up", "Down", "Right", "Left")
+        smallText = pygame.font.SysFont("comicsansms", 45)
+        TitleSurf, TitleRect = text_objects(TEXTS[self.index]+' : '+str(self.key),smallText)
+        TitleRect.center = (self.x+(self.w/2), self.y+(self.h/2))
+        gameDisplay.blit(TitleSurf, TitleRect)
+
+class BackButton:
+    def __init__(self, x, y, w, h, ac_color, ic_color, text):
+        self.ac_color = ac_color
+        self.ic_color = ic_color
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.text = text
+
+    def show(self):
+        mouse = pygame.mouse.get_pos()
+        button = pygame.Rect(self.x, self.y, self.w, self.h)
+        if button.collidepoint(mouse):
+            pygame.draw.rect(gameDisplay, self.ac_color, button)
+            self.word()
+            return True
+        else:
+            pygame.draw.rect(gameDisplay, self.ic_color, button)
+            self.word()
+
+
+    def word(self):
+        smallText = pygame.font.SysFont("comicsansms", 30)
+        TitleSurf, TitleRect = text_objects(self.text,smallText)
+        TitleRect.center = (self.x+(self.w/2), self.y+(self.h/2))
+        gameDisplay.blit(TitleSurf, TitleRect)
+
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
     return textSurface, textSurface.get_rect()
@@ -114,46 +175,52 @@ def quitgame():
     pygame.quit()
     quit()
 
-def settings(back):
+def settings():
     texts = ("Up", "Down", "Right", "Left")
     button_width = 80
+    back_button_width = 100
+    back_button_height = 50
+    largeText = pygame.font.SysFont("comicsansms", 90)
+    smallText = pygame.font.SysFont("comicsansms", 45)
     #open file key.txt, read keys
     with open("keys.txt", "r") as file:
         keys = file.read().split(",")
-    largeText = pygame.font.SysFont("comicsansms", 90)
-    smallText = pygame.font.SysFont("comicsansms", 45)
+    #display word
     TitleSurf, TitleRect = text_objects("Settings", largeText)
     TitleRect.center = ((display_width/2), 100)
     gameDisplay.fill(white)
     gameDisplay.blit(TitleSurf, TitleRect)
 
+    for i in texts:
+        inx = texts.index(i)
+        k_name = pygame.key.name(int(keys[inx]))
+        button = Button((display_width - BUTTON_W) / 2,
+                        240 + inx * (BUTTON_H + 10),
+                        BUTTON_W, BUTTON_H,
+                        bright_green, green,
+                        k_name, inx)
+    back_button = BackButton(display_width/7-back_button_width/2, display_height/4*3, back_button_width, back_button_height, bright_green, green, "Back")
+    game_button = BackButton(display_width/7*6-back_button_width/2, display_height/4*3, back_button_width, back_button_height, bright_red, red, "Play")
     while True:
         mouse_pos = pygame.mouse.get_pos()
-        buttons = []
-        for i in range(4):
-            buttons.append(pygame.Rect((display_width-BUTTON_W)/2,
-                                       240 + i * (BUTTON_H + 10),
-                                       BUTTON_W,
-                                       BUTTON_H))
-            pygame.draw.rect(gameDisplay, green, buttons[i])
-            k_name = pygame.key.name(int(keys[i]))
-            TextSurf, TextRect = text_objects(texts[i]+' : '+ k_name, smallText)
-            TextRect.center = buttons[i].center
-            gameDisplay.blit(TextSurf, TextRect)
+        for button in Button.family:
+            if button.show():
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        num = Button.family.index(button)
+                        keys[num] = event.key
+                        button.key = pygame.key.name(int(keys[num]))
+        if back_button.show():
+            return True
+        if game_button.show():
+            game_loop()
+
+        with open("keys.txt", "w") as file:
+            file.write(','.join(map(str, keys)))
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == QUIT:
                 pygame.quit()
                 quit()
-            if event.type == pygame.KEYDOWN:
-                for button in buttons:
-                    if button.collidepoint(mouse_pos):
-                        index = buttons.index(button)
-                        if not event.key in keys:
-                            keys[index] = event.key
-                            with open("keys.txt", "w") as file:
-                                file.write(','.join(map(str, keys)))
-        active_button("Back",150,540,100,50,green,bright_green,back)
-        active_button("Start Game",550,540,100,50,red,bright_red,game_loop)
         pygame.display.update()
         clock.tick(30)
 
@@ -170,7 +237,8 @@ def game_intro():
                 quitgame()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_l:
-                    settings(game_intro)
+                    settings()
+                    game_intro()
         active_button("GO!",150,450,100,50,green,bright_green,game_loop)
         active_button("Quit",550,450,100,50,red,bright_red,quitgame)
         pygame.display.update()
@@ -214,12 +282,13 @@ def game_loop():
         count = True
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+                quitgame()
             if event.type == pygame.KEYDOWN:
                 if event.key == K_p:
                     paused = True
                     pause()
+                if event.key == K_q:
+                    quitgame()
                 if event.key == left:
                     if dir != 2:
                         if count:
@@ -291,4 +360,7 @@ def game_loop():
         pygame.display.update()
         clock.tick(fps)
 
-game_intro()
+try:
+    game_intro()
+except KeyboardInterrupt:
+    quitgame()
