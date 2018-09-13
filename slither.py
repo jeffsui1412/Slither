@@ -149,6 +149,7 @@ def high(point):
 
 def pause():
     global paused
+    gameDisplay.fill(white)
     largeText = pygame.font.SysFont("comicsansms", 90)
     TextSurf, TextRect = text_objects("Paused", largeText)
     TextRect.center = ((display_width/2), (display_height/2))
@@ -176,6 +177,7 @@ def quitgame():
 
 def settings():
     Button.family = []
+    gameDisplay.fill(white)
     texts = ("Up", "Down", "Right", "Left")
     button_width = 80
     back_button_width = 100
@@ -188,7 +190,6 @@ def settings():
     #display word
     TitleSurf, TitleRect = text_objects("Settings", largeText)
     TitleRect.center = ((display_width/2), 100)
-    gameDisplay.fill(white)
     gameDisplay.blit(TitleSurf, TitleRect)
 
     for i in texts:
