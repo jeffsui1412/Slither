@@ -158,10 +158,9 @@ def pause():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-            # if event.type == pygame.KEYDOWN:
-            #     if event.key == pygame.K_l:
-            #         paused = False
-            #         settings(pause)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_l:
+                    settings()
         active_button("Keep playing!",150,450,100,50,green,bright_green,unpause)
         active_button("Quit",550,450,100,50,red,bright_red,quitgame)
         pygame.display.update()
@@ -176,6 +175,7 @@ def quitgame():
     quit()
 
 def settings():
+    Button.family = []
     texts = ("Up", "Down", "Right", "Left")
     button_width = 80
     back_button_width = 100
@@ -362,5 +362,6 @@ def game_loop():
 
 try:
     game_intro()
+
 except KeyboardInterrupt:
     quitgame()
