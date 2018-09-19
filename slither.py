@@ -27,6 +27,7 @@ BUTTON_W = 200
 BUTTON_H = 60
 
 class Button:
+    
     family = []
 
     def __init__(self, x, y, w, h, ac_color, ic_color, key, index):
@@ -55,7 +56,7 @@ class Button:
     def word(self):
         TEXTS = ("Up", "Down", "Right", "Left")
         smallText = pygame.font.SysFont("comicsansms", 45)
-        TitleSurf, TitleRect = text_objects(TEXTS[self.index]+' : '+str(self.key),smallText)
+        TitleSurf, TitleRect = text_objects(TEXTS[self.index] + ' : ' + str(self.key), smallText)
         TitleRect.center = (self.x+(self.w/2), self.y+(self.h/2))
         gameDisplay.blit(TitleSurf, TitleRect)
 
@@ -94,12 +95,12 @@ def text_objects(text, font):
 def active_button(msg, x, y, w, h, ic, ac, action = None):
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
-    if x+w > mouse[0] > x and y+h > mouse[1] > y:
-        pygame.draw.rect(gameDisplay, ac,(x,y,w,h))
+    if x+w > mouse[0] > x and y + h > mouse[1] > y:
+        pygame.draw.rect(gameDisplay, ac,(x, y, w, h))
         if click[0] == 1 and action != None:
             action()
     else:
-        pygame.draw.rect(gameDisplay, ic,(x,y,w,h))
+        pygame.draw.rect(gameDisplay, ic,(x, y, w, h))
     smallText = pygame.font.SysFont("comicsansms",20)
     textSurf, textRect = text_objects(msg, smallText)
     textRect.center = ((x+(w/2)), (y+(h/2)))
@@ -125,18 +126,18 @@ def crashed():
     global highest_point
     largeText = pygame.font.SysFont("comicsansms", 80)
     TextSurf, TextRect = text_objects("---- Game Over ---- ", largeText)
-    TextRect.center = ((display_width/2), (display_height/2))
+    TextRect.center = ((display_width / 2), (display_height / 2))
     gameDisplay.blit(TextSurf, TextRect)
     high(len(snake_body) - 4)
-    game_point(len(snake_body)-4, 0, 0, "Game Points: ")
+    game_point(len(snake_body) - 4, 0, 0, "Game Points: ")
     game_point((highest_point), 0, 40, "Highest Game Score: ")
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-        active_button("Play Again!",150,450,100,50,green,bright_green,game_loop)
-        active_button("Quit",550,450,100,50,red,bright_red,quitgame)
+        active_button("Play Again!", 150, 450, 100, 50, green, bright_green, game_loop)
+        active_button("Quit", 550, 450, 100, 50, red, bright_red, quitgame)
         pygame.display.update()
         clock.tick(40)
 
@@ -152,7 +153,7 @@ def pause():
     gameDisplay.fill(white)
     largeText = pygame.font.SysFont("comicsansms", 90)
     TextSurf, TextRect = text_objects("Paused", largeText)
-    TextRect.center = ((display_width/2), (display_height/2))
+    TextRect.center = ((display_width / 2), (display_height / 2))
     gameDisplay.blit(TextSurf, TextRect)
     while paused:
         for event in pygame.event.get():
@@ -162,8 +163,8 @@ def pause():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_l:
                     settings()
-        active_button("Keep playing!",150,450,100,50,green,bright_green,unpause)
-        active_button("Quit",550,450,100,50,red,bright_red,quitgame)
+        active_button("Keep playing!", 150, 450, 100, 50, green, bright_green, unpause)
+        active_button("Quit", 550, 450, 100, 50, red, bright_red, quitgame)
         pygame.display.update()
         clock.tick(40)
 
@@ -189,7 +190,7 @@ def settings():
         keys = file.read().split(",")
     #display word
     TitleSurf, TitleRect = text_objects("Settings", largeText)
-    TitleRect.center = ((display_width/2), 100)
+    TitleRect.center = ((display_width / 2), 100)
     gameDisplay.blit(TitleSurf, TitleRect)
 
     for i in texts:
@@ -200,8 +201,8 @@ def settings():
                         BUTTON_W, BUTTON_H,
                         bright_green, green,
                         k_name, inx)
-    back_button = BackButton(display_width/7-back_button_width/2, display_height/4*3, back_button_width, back_button_height, bright_green, green, "Back")
-    game_button = BackButton(display_width/7*6-back_button_width/2, display_height/4*3, back_button_width, back_button_height, bright_red, red, "Play")
+    back_button = BackButton(display_width / 7 - back_button_width / 2, display_height / 4 * 3, back_button_width, back_button_height, bright_green, green, "Back")
+    game_button = BackButton(display_width / 7 * 6 - back_button_width / 2, display_height / 4 * 3, back_button_width, back_button_height, bright_red, red, "Play")
     while True:
         mouse_pos = pygame.mouse.get_pos()
         for button in Button.family:
@@ -230,7 +231,7 @@ def game_intro():
     gameDisplay.fill(white)
     largeText = pygame.font.SysFont("comicsansms", 100)
     TextSurf, TextRect = text_objects("Snake Game", largeText)
-    TextRect.center = ((display_width/2), (display_height/2))
+    TextRect.center = ((display_width / 2), (display_height / 2))
     gameDisplay.blit(TextSurf, TextRect)
     while intro:
         for event in pygame.event.get():
@@ -240,8 +241,6 @@ def game_intro():
                 if event.key == pygame.K_l:
                     settings()
                     game_intro()
-        active_button("GO!",150,450,100,50,green,bright_green,game_loop)
-        active_button("Quit",550,450,100,50,red,bright_red,quitgame)
         pygame.display.update()
         clock.tick(40)
 
@@ -321,7 +320,7 @@ def game_loop():
 
         snake_x = x_change + snake_body[0][0]
         snake_y = y_change + snake_body[0][1]
-        points = len(snake_body)-4
+        points = len(snake_body) - 4
         s_block = [snake_x, snake_y]
         eat = False
         #white game display
